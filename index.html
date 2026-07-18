@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Route Visualizer - Dijkstra Pathfinding</title>
+    <meta name="description" content="Interactive pathfinding simulator with Dijkstra's algorithm and dynamic rerouting">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            800: '#1f2937',
+                            900: '#111827'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-900 p-6">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl font-bold text-white mb-8 text-center">
+            Smart Route Visualizer
+        </h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Canvas Section -->
+            <div class="lg:col-span-3">
+                <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+                    <canvas 
+                        id="routeCanvas" 
+                        width="800" 
+                        height="600" 
+                        class="border border-gray-600 rounded-lg cursor-crosshair bg-gray-900">
+                    </canvas>
+                    <p class="text-gray-400 text-sm mt-2">
+                        Click to set source/destination • Shift+Click to block/unblock nodes
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Control Panel -->
+            <div class="space-y-4">
+                <!-- Route Control Card -->
+                <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+                    <h3 class="text-white font-semibold mb-3">Route Control</h3>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="text-sm">
+                            <span class="text-gray-400">Source:</span>
+                            <span id="sourceDisplay" class="text-blue-400 ml-2">Not set</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="text-gray-400">Destination:</span>
+                            <span id="destinationDisplay" class="text-amber-400 ml-2">Not set</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="text-gray-400">Distance:</span>
+                            <span id="distanceDisplay" class="text-green-400 ml-2">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <button 
+                            id="startBtn" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8 5v10l8-5-8-5z"/>
+                            </svg>
+                            Start Route
+                        </button>
+                        
+                        <button 
+                            id="stopBtn" 
+                            class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <rect x="4" y="4" width="12" height="12"/>
+                            </svg>
+                            Stop
+                        </button>
+                        <button 
+                            id="resetBtn" 
+                            class="w-full border border-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Status Card -->
+                <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+                    <h3 class="text-white font-semibold mb-3">Algorithm Status</h3>
+                    <div id="statusDisplay" class="text-sm text-gray-300">
+                        Ready
+                    </div>
+                    
+                    <div class="mt-4 space-y-2 text-xs text-gray-400">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            Source Node
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                            Destination Node
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            Blocked Node
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-1 bg-green-500"></div>
+                            Optimal Path
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="pathfinding.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
