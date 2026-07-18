@@ -26,39 +26,37 @@ class PathfindingEngine {
         
         // Create connections (roads between adjacent nodes)
         this.nodes.forEach((node, index) => {
-            const row = Math.floor(index / this.gridSize);
-            const col = index % this.gridSize;
-            
-            // Connect to right neighbor
-            if (col < this.gridSize - 1 && index + 1 < 80) {
-                node.connections.push(index + 1);
-            }
-            
-            // Connect to bottom neighbor
-            if (index + this.gridSize < 80) {
-                node.connections.push(index + this.gridSize);
-            }
-            
-            // Connect to left neighbor
-            if (col > 0 && index - 1 >= 0) {
-                node.connections.push(index - 1);
-            }
-            
-            // Connect to top neighbor
-            if (index - this.gridSize >= 0) {
-                node.connections.push(index - this.gridSize);
-            }
-            
-            // Add some diagonal connections for more interesting paths
-            if (Math.random() > 0.7) {
-                if (row > 0 && col > 0 && index - this.gridSize - 1 >= 0) {
-                    node.connections.push(index - this.gridSize - 1);
-                }
-                if (row > 0 && col < this.gridSize - 1 && index - this.gridSize + 1 >= 0 && index - this.gridSize + 1 < 80) {
-                    node.connections.push(index - this.gridSize + 1);
-                }
-            }
-        });
+    const row = Math.floor(index / this.gridSize);
+    const col = index % this.gridSize;
+    
+    // Helper function to create mutual, safe connections
+    const connect = (idA, idB) => {
+        if (idB >= 0 && idB < 80) {
+            if (!this.nodes[idA].connections.includes(idB)) this.nodes[idA].connections.push(idB);
+            if (!this.nodes[idB].connections.includes(idA)) this.nodes[idB].connections.push(idA);
+        }
+    };
+
+    // 1. Connect Straight Neighbors (Right and Bottom handles all pairs sequentially)
+    if (col < this.gridSize - 1) {
+        connect(index, index + 1);
+    }
+    if (index + this.gridSize < 80) {
+        connect(index, index + this.gridSize);
+    }
+    
+    // 2. Add Diagonal Connections (Mutually linked)
+    if (Math.random() > 0.7) {
+        // Diagonal Bottom-Right
+        if (row < Math.floor(80 / this.gridSize) - 1 && col < this.gridSize - 1) {
+            connect(index, index + this.gridSize + 1);
+        }
+        // Diagonal Bottom-Left
+        if (row < Math.floor(80 / this.gridSize) - 1 && col > 0) {
+            connect(index, index + this.gridSize - 1);
+        }
+    }
+});
     }
 
     // Dijkstra's algorithm implementation
